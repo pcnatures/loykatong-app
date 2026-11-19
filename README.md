@@ -178,6 +178,15 @@ Vercel / Netlify / Firebase Hosting / Cloudflare Pages ได้ทั้งห�
 - Build command: `npm run build` · Output: `dist`
 - ใส่ environment variables ชุดเดียวกับ `.env.local` ในหน้าตั้งค่าของผู้ให้บริการ
 
+### อัปเดตเว็บด้วยคำสั่งเดียว (Vercel ผูกกับ GitHub)
+
+```bash
+npm run deploy                     # ข้อความ commit อัตโนมัติ
+npm run deploy -- "แก้สีปุ่ม"        # กำหนดข้อความ commit เอง
+```
+
+คำสั่งนี้จะ build ก่อน (ถ้าไม่ผ่านจะหยุด) → `git add` → `git commit` → `git push` แล้ว Vercel จะ deploy ให้อัตโนมัติ และจะไม่ยอม commit ไฟล์ `.env` / `.env.local` (ดู `scripts/deploy.mjs`)
+
 ## หมายเหตุ
 
 - การค้นหาสถานที่ใช้ Nominatim ของ OpenStreetMap ซึ่งจำกัด 1 ครั้ง/วินาที แอปจึงค้นหาเมื่อกด Enter เท่านั้น ถ้าผู้ใช้เยอะควรตั้ง geocoder ของตัวเองหรือใช้บริการ Nominatim แบบเสียเงิน
