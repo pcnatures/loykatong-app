@@ -1,11 +1,16 @@
 // อัปเดตเว็บด้วยคำสั่งเดียว
 //   npm run deploy                      → ใช้ข้อความ commit อัตโนมัติ
 //   npm run deploy -- "แก้สีปุ่ม"         → กำหนดข้อความ commit เอง
-// package.json สั่ง `npm run build` ก่อน ถ้า build ไม่ผ่านจะหยุด ไม่ push
+// build ก่อนเสมอ ถ้า build ไม่ผ่านจะหยุด ไม่ push
 // push ขึ้น GitHub แล้ว Vercel จะ deploy ให้อัตโนมัติ
+//
+// หมายเหตุ: package.json ต้องเรียกสคริปต์นี้ด้วย `node ...` ตรง ๆ
+// (ถ้าขึ้นต้นด้วย `npm ... &&` บน Windows ข้อความ commit จะมีเครื่องหมาย ^ ติดมา)
 import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 const SITE = 'https://loykatong-app.vercel.app/'
+const VITE = fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url))
 
 const git = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim()
 const gitShow = (args) => execFileSync('git', args, { stdio: 'inherit' })
@@ -18,6 +23,12 @@ try {
   git(['--version'])
 } catch {
   fail('ไม่พบคำสั่ง git — ติดตั้ง Git แล้วเปิด Terminal ใหม่')
+}
+
+try {
+  execFileSync(process.execPath, [VITE, 'build'], { stdio: 'inherit' })
+} catch {
+  fail('build ไม่ผ่าน — แก้ error ด้านบนก่อน (ยังไม่ได้ commit/push อะไร)')
 }
 
 gitShow(['add', '-A'])

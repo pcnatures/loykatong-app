@@ -182,7 +182,7 @@ Vercel / Netlify / Firebase Hosting / Cloudflare Pages ได้ทั้งห�
 
 ```bash
 npm run deploy                     # ข้อความ commit อัตโนมัติ
-npm run deploy -- "แก้สีปุ่ม"        # กำหนดข้อความ commit เอง
+npm run deploy -- "แก้สีปุ่ม"      # กำหนดข้อความ commit เอง
 ```
 
 คำสั่งนี้จะ build ก่อน (ถ้าไม่ผ่านจะหยุด) → `git add` → `git commit` → `git push` แล้ว Vercel จะ deploy ให้อัตโนมัติ และจะไม่ยอม commit ไฟล์ `.env` / `.env.local` (ดู `scripts/deploy.mjs`)
