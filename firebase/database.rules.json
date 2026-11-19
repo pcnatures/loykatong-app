@@ -1,0 +1,41 @@
+{
+  "rules": {
+    "rooms": {
+      "$room": {
+        ".validate": "$room.matches(/^[a-zA-Z0-9_-]{1,64}$/)",
+        "krathongs": {
+          ".read": true,
+          ".indexOn": ["createdAt"],
+          "$id": {
+            ".write": "!data.exists() && $id.matches(/^[a-zA-Z0-9-]{8,64}$/)",
+            ".validate": "newData.hasChildren(['name', 'createdAt', 'avatar', 'krathong', 'seed', 'lane', 'startX', 'startD'])",
+            "clientId": { ".validate": "newData.isString() && newData.val().length <= 64" },
+            "name": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60" },
+            "wish": { ".validate": "newData.isString() && newData.val().length <= 300" },
+            "createdAt": { ".validate": "newData.isNumber() && newData.val() >= now - 60000 && newData.val() <= now + 60000" },
+            "seed": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "lane": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "startX": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1" },
+            "startD": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 0.5" },
+            "avatar": {
+              "$key": { ".validate": "newData.isString() && newData.val().length <= 24" }
+            },
+            "krathong": {
+              "$key": { ".validate": "newData.isString() && newData.val().length <= 24" }
+            },
+            "$other": { ".validate": false }
+          }
+        },
+        "presence": {
+          ".read": true,
+          "$client": {
+            ".write": "$client.matches(/^[a-zA-Z0-9-]{8,64}$/)",
+            ".validate": "newData.hasChildren(['at'])",
+            "at": { ".validate": "newData.val() === now" },
+            "$other": { ".validate": false }
+          }
+        }
+      }
+    }
+  }
+}

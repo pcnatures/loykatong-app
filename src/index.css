@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* ───────────── Design tokens: ราตรีน้ำเงินเข้ม · ทอง · แสงเทียน ───────────── */
+@theme {
+  --font-sans: "Mitr", "Noto Sans Thai", "Leelawadee UI", system-ui, sans-serif;
+  --font-display: "Charm", "Mitr", serif;
+
+  --color-night-950: #040918;
+  --color-night-900: #081230;
+  --color-night-850: #0b1840;
+  --color-night-800: #0f1f4f;
+  --color-night-700: #172c68;
+  --color-night-600: #213c85;
+  --color-night-500: #2f52a6;
+
+  --color-gold-100: #fff6dc;
+  --color-gold-200: #fbe8b0;
+  --color-gold-300: #f6d985;
+  --color-gold-400: #efc55a;
+  --color-gold-500: #e0ac3c;
+  --color-gold-600: #c48d27;
+  --color-gold-700: #9a6b1b;
+
+  --color-ember-300: #ffd39a;
+  --color-ember-400: #ffb55e;
+  --color-ember-500: #ff9433;
+
+  --color-lotus-300: #ffc2d3;
+  --color-lotus-400: #ff97b5;
+  --color-lotus-500: #f06a93;
+
+  --animate-flicker: flicker 1.6s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-spin-slow: spin 60s linear infinite;
+  --animate-float-up: float-up 26s linear infinite;
+  --animate-shimmer: shimmer 3.5s ease-in-out infinite;
+
+  @keyframes flicker {
+    0%, 100% { transform: scale(1, 1) rotate(-1deg); opacity: 1; }
+    25% { transform: scale(0.94, 1.06) rotate(2deg); opacity: 0.92; }
+    50% { transform: scale(1.04, 0.95) rotate(-2deg); opacity: 1; }
+    75% { transform: scale(0.97, 1.08) rotate(1deg); opacity: 0.95; }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+  }
+  @keyframes float-up {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    8% { opacity: 1; }
+    85% { opacity: 0.85; }
+    100% { transform: translate3d(var(--drift-x, 30px), -70vh, 0); opacity: 0; }
+  }
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.45; transform: scaleX(1); }
+    50% { opacity: 0.85; transform: scaleX(1.25); }
+  }
+}
+
+@keyframes wave-x {
+  from { background-position-x: 0; }
+  to { background-position-x: var(--wave-w, 160px); }
+}
+
+@keyframes ripple {
+  from { transform: translate(-50%, -50%) scale(0.2); opacity: 0.9; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    @apply bg-night-950 font-sans text-gold-100 antialiased;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgb(47 82 166 / 0.35), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgb(224 172 60 / 0.12), transparent 60%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: rgb(239 197 90 / 0.35);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold-400);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* กรอบลายไทยแบบเบา ๆ: เส้นทองคู่ + มุมเพชร */
+  .thai-frame {
+    position: relative;
+    border: 1px solid rgb(239 197 90 / 0.45);
+    box-shadow:
+      inset 0 0 0 4px rgb(8 18 48 / 0.9),
+      inset 0 0 0 5px rgb(239 197 90 / 0.25),
+      0 20px 60px -20px rgb(0 0 0 / 0.6);
+  }
+  .thai-frame::before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    left: calc(50% - 5px);
+    top: 5px;
+    z-index: 3000;
+    pointer-events: none;
+    background: var(--color-gold-400);
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px rgb(255 181 94 / 0.8);
+  }
+
+  .glass {
+    background: linear-gradient(180deg, rgb(15 31 79 / 0.72), rgb(8 18 48 / 0.82));
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .gold-text {
+    background: linear-gradient(180deg, #fff6dc 0%, #f6d985 40%, #e0ac3c 75%, #c48d27 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-night-950 transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50;
+    background: linear-gradient(180deg, #fbe8b0, #efc55a 45%, #c48d27);
+    box-shadow: 0 0 0 1px rgb(255 246 220 / 0.5) inset, 0 10px 30px -8px rgb(255 181 94 / 0.7);
+  }
+  .btn-gold:not(:disabled):hover {
+    filter: brightness(1.06);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-gold-400/40 px-4 py-2 text-gold-200 transition hover:border-gold-300 hover:bg-gold-400/10 active:scale-[0.98] disabled:opacity-40;
+  }
+
+  /* ไอคอนหมุดบนแผนที่ (ใช้ทั้ง Google & Leaflet) */
+  .lk-pin {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 46px;
+    filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .lk-pin:hover { transform: translateY(-3px) scale(1.06); }
+  .lk-pin[data-active="true"] { transform: scale(1.22); }
+  .leaflet-div-icon.lk-pin-wrap { background: none; border: 0; }
+  .leaflet-container {
+    background: #081230;
+    font-family: var(--font-sans);
+  }
+  .leaflet-control-attribution {
+    background: rgb(4 9 24 / 0.7) !important;
+    color: #c9b98d !important;
+    font-size: 10px;
+  }
+  .leaflet-control-attribution a { color: #efc55a !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
