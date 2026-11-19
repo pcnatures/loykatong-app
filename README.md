@@ -40,14 +40,14 @@ npm run build && npm run preview   # สร้างไฟล์ production ไ�
 
 | # | ฟีเจอร์ | อยู่ที่ไหนในโค้ด |
 |---|---|---|
-| 1 | **เลือกสถานที่บนแผนที่** — Google Maps (เมื่อมีคีย์) หรือ Leaflet/OSM, หมุดสถานที่ยอดนิยม 8 แห่งพร้อมพิกัดจริง, ค้นหาสถานที่ทั่วไทย, แตะแผนที่เพื่อปักหมุดเอง, ปุ่ม "ใช้ตำแหน่งของฉัน", ฉากหลังเปลี่ยนตามสถานที่ (วัดอรุณ, สะพานพระราม 8, ชิงช้าสวรรค์เอเชียทีค, ประตูท่าแพ + โคมยี่เป็ง ฯลฯ) | `components/map/*`, `config/locations.js`, `components/river/SceneBackdrop.jsx` |
+| 1 | **เลือกสถานที่บนแผนที่** — OpenStreetMap (Leaflet) ไม่ต้องใช้คีย์, หมุดสถานที่ยอดนิยม 8 แห่งพร้อมพิกัดจริง, ค้นหาสถานที่ทั่วไทย, แตะแผนที่เพื่อปักหมุดเอง, ปุ่ม "ใช้ตำแหน่งของฉัน", ฉากหลังเปลี่ยนตามสถานที่ (วัดอรุณ, สะพานพระราม 8, ชิงช้าสวรรค์เอเชียทีค, ประตูท่าแพ + โคมยี่เป็ง ฯลฯ) | `components/map/*`, `config/locations.js`, `components/river/SceneBackdrop.jsx` |
 | 2 | **สร้างอวตาร** — เพศ 3 แบบ, โครงหน้า 4, ทรงผม 6, สีผม 4, สีผิว 6, ชุด 4 แบบ (ไทยจักรี / ราชปะแตน / ไทยประยุกต์ / ลำลองร่วมสมัย) + สีชุด 7 สี, ตัวอย่างเรียลไทม์, ปุ่มสุ่ม | `components/avatar/*`, `config/avatarOptions.js` |
 | 3 | **เลือกและแต่งกระทง** — ใบตอง, ดอกบัว, ขนมปัง, น้ำแข็ง (รักษ์โลก), หงส์ทอง (แฟนซี) · สีดอกไม้ 5 สี · เทียน/ธูป 4 แบบ | `components/krathong/*`, `config/krathongOptions.js` |
 | 4 | **ชื่อ + คำอธิษฐาน** — ชื่อ ≤ 30 ตัว, คำอธิษฐาน ≤ 150 ตัว (นับแบบไม่ตัดอีโมจิ), ตัวกรองคำหยาบไทย/อังกฤษ พร้อมแสดงตัวอย่างข้อความที่ถูกแทนที่ | `components/wish/WishForm.jsx`, `lib/profanity.js` |
 | 5 | **ฉากแม่น้ำ + หลายผู้เล่น** — อวตารนั่งลงวางกระทง, น้ำกระเพื่อม, เปลวเทียนไหว, เงาจันทร์ระยิบระยับ, ดอกไม้ไฟ/โคมลอยตามสถานที่ · เห็นกระทง+ชื่อของทุกคนในสถานที่เดียวกันแบบเรียลไทม์, จำนวนคนออนไลน์, แจ้งเตือน "✨ … เพิ่งลอยกระทง" · ชี้/แตะกระทงเพื่อดูชื่อ อวตาร และคำอธิษฐาน | `components/river/*`, `realtime/*`, `hooks/useRealtimeRoom.js` |
 | 6 | **บันทึกภาพที่ระลึก** — การ์ด 1080×1350 (4:5) วาดด้วย Canvas API: อวตาร, กระทง, ฉากสถานที่, ชื่อ, คำอธิษฐาน, วันที่ไทย, กรอบลายทอง · ดาวน์โหลด PNG/JPG · แชร์รูปตรงไป LINE/Facebook/IG ผ่าน Web Share API บนมือถือ · ลิงก์แชร์ Facebook / LINE / X | `lib/souvenirCard.js`, `components/share/SouvenirModal.jsx` |
 
-**เทคโนโลยี**: React 19 + Vite 8 · Tailwind CSS v4 · Framer Motion 12 · Firebase Realtime Database หรือ Supabase Realtime · Google Maps (`@vis.gl/react-google-maps`) / Leaflet (`react-leaflet`)
+**เทคโนโลยี**: React 19 + Vite 8 · Tailwind CSS v4 · Framer Motion 12 · Firebase Realtime Database หรือ Supabase Realtime · OpenStreetMap ผ่าน Leaflet (`react-leaflet`) + ค้นหาด้วย Nominatim
 
 ---
 
@@ -58,13 +58,13 @@ src/
 ├─ App.jsx                     สลับหน้า "เลือกสถานที่" ↔ "ริมน้ำ" + จำค่าที่ผู้ใช้เลือกไว้
 ├─ pages/RiverStage.jsx        หน้าริมน้ำ: ฉากเรียลไทม์ + แผงปรับแต่ง + ลำดับการลอย
 ├─ config/
-│  ├─ env.js                   อ่าน .env ที่เดียว + ตรวจว่าใช้ Google/Leaflet, Firebase/Supabase/สาธิต
+│  ├─ env.js                   อ่าน .env ที่เดียว + ตรวจว่าใช้ Firebase/Supabase/สาธิต
 │  ├─ locations.js             สถานที่ยอดนิยม (พิกัดจริง) + ห้องสำหรับหมุดที่ปักเอง
 │  ├─ scenes.js                บรรยากาศแต่ละฉาก (ความเร็วน้ำ, โคมลอย, ดอกไม้ไฟ, สีไฟสะท้อน)
 │  ├─ avatarOptions.js         ตัวเลือกอวตาร
 │  └─ krathongOptions.js       ตัวเลือกกระทง
 ├─ components/
-│  ├─ map/                     LocationStep, GoogleMapKit, LeafletMapKit, Pin
+│  ├─ map/                     LocationStep, LeafletMapKit (OpenStreetMap), Pin
 │  ├─ avatar/                  Avatar (SVG + IK แขน + ท่าทาง), AvatarEditor
 │  ├─ krathong/                Krathong (SVG 5 แบบ), KrathongPicker
 │  ├─ wish/WishForm.jsx
@@ -95,28 +95,11 @@ supabase/schema.sql            ตาราง + RLS + เปิด Realtime ส
 cp .env.example .env.local
 ```
 
-> ค่าที่ขึ้นต้นด้วย `VITE_` จะถูกฝังลงในไฟล์ JavaScript ฝั่งเบราว์เซอร์ จึง**ต้อง**จำกัดสิทธิ์คีย์ตามขั้นตอนด้านล่าง (เป็นแนวทางปกติของ Google Maps/Firebase/Supabase anon key)
+> ค่าที่ขึ้นต้นด้วย `VITE_` จะถูกฝังลงในไฟล์ JavaScript ฝั่งเบราว์เซอร์ จึง**ต้อง**จำกัดสิทธิ์คีย์ตามขั้นตอนด้านล่าง (เป็นแนวทางปกติของ Firebase/Supabase anon key)
 
-### 1) Google Maps (ไม่บังคับ — ถ้าไม่ใส่จะใช้ OpenStreetMap)
+แผนที่ใช้ OpenStreetMap เสมอ จึงไม่ต้องตั้งค่าคีย์แผนที่
 
-1. เข้า [Google Cloud Console](https://console.cloud.google.com/) → สร้าง/เลือกโปรเจกต์ → เปิด Billing
-2. **APIs & Services → Library** เปิดใช้ 3 ตัวนี้
-   - Maps JavaScript API
-   - Places API (New) — ใช้ค้นหาสถานที่แบบพิมพ์แล้วขึ้นรายการ
-   - Geocoding API — ใช้แปลงหมุดที่ปักเป็นชื่อย่าน
-3. **Credentials → Create credentials → API key**
-4. กด Edit key แล้วจำกัดสิทธิ์
-   - *Application restrictions* → **Websites** → ใส่ `http://localhost:5173/*` และโดเมนจริง เช่น `https://your-site.com/*`
-   - *API restrictions* → เลือกเฉพาะ 3 API ข้างต้น
-5. (แนะนำ) **Google Maps Platform → Map management → Create Map ID** ชนิด JavaScript / Vector เพื่อใช้ Advanced Markers และปรับสไตล์เองได้ ถ้าไม่สร้างจะใช้ `DEMO_MAP_ID`
-6. ใส่ใน `.env.local`
-
-```env
-VITE_GOOGLE_MAPS_API_KEY=AIza...
-VITE_GOOGLE_MAPS_MAP_ID=abcd1234ef     # เว้นว่างได้
-```
-
-### 2) Firebase Realtime Database (เลือกอย่างใดอย่างหนึ่งกับ Supabase)
+### 1) Firebase Realtime Database (เลือกอย่างใดอย่างหนึ่งกับ Supabase)
 
 1. [Firebase Console](https://console.firebase.google.com/) → **Add project**
 2. **Build → Realtime Database → Create database** เลือก region `asia-southeast1` (สิงคโปร์ ใกล้ไทย) → Start in **locked mode**
@@ -142,7 +125,7 @@ rooms/{roomId}/presence/{tabId}    { at }   ← ลบอัตโนมัต�
 แอปดึงเฉพาะกระทง 10 นาทีล่าสุด (สูงสุด 150 ใบ/สถานที่) ข้อมูลเก่าจะค้างในฐานข้อมูล ถ้าต้องการลบอัตโนมัติให้เขียน Scheduled Cloud Function ลบรายการที่ `createdAt` เก่ากว่า 1 วัน
 สำหรับระบบจริงที่คนใช้เยอะ แนะนำเปิด **App Check** และ Anonymous Auth เพิ่ม
 
-### 3) Supabase (ทางเลือกแทน Firebase)
+### 2) Supabase (ทางเลือกแทน Firebase)
 
 1. [supabase.com](https://supabase.com/) → New project (region Singapore)
 2. **SQL Editor → New query** → วางทั้งไฟล์ [`supabase/schema.sql`](supabase/schema.sql) → Run
@@ -194,10 +177,9 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 Vercel / Netlify / Firebase Hosting / Cloudflare Pages ได้ทั้งหมด (เป็น static site)
 - Build command: `npm run build` · Output: `dist`
 - ใส่ environment variables ชุดเดียวกับ `.env.local` ในหน้าตั้งค่าของผู้ให้บริการ
-- อย่าลืมเพิ่มโดเมนจริงใน HTTP referrer ของ Google Maps API key
 
 ## หมายเหตุ
 
-- การค้นหาในโหมด OpenStreetMap ใช้ Nominatim ซึ่งจำกัด 1 ครั้ง/วินาที แอปจึงค้นหาเมื่อกด Enter เท่านั้น ถ้าผู้ใช้เยอะควรใช้ Google Places หรือ geocoder ของตัวเอง
+- การค้นหาสถานที่ใช้ Nominatim ของ OpenStreetMap ซึ่งจำกัด 1 ครั้ง/วินาที แอปจึงค้นหาเมื่อกด Enter เท่านั้น ถ้าผู้ใช้เยอะควรตั้ง geocoder ของตัวเองหรือใช้บริการ Nominatim แบบเสียเงิน
 - เคารพการตั้งค่า "ลดการเคลื่อนไหว" (prefers-reduced-motion) ของระบบ
 - ข้อความ UI เป็นภาษาไทยทั้งหมด รองรับคีย์บอร์ดและ screen reader ในตัวเลือกหลัก

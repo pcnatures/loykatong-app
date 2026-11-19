@@ -6,8 +6,8 @@ import { THAILAND_CENTER } from '../../config/locations'
 import { pinHtml } from './Pin'
 
 /**
- * แผนที่สำรองเมื่อไม่มี Google Maps API key
- * - Leaflet + แผนที่ OpenStreetMap โทนมืดของ CARTO (ไม่ต้องใช้คีย์)
+ * แผนที่ของแอป (ใช้ OpenStreetMap อย่างเดียว ไม่ต้องใช้คีย์)
+ * - Leaflet + ข้อมูล OpenStreetMap ภาพโทนมืดของ CARTO ให้เข้ากับธีมกลางคืน
  * - ค้นหาด้วย Nominatim (OSM) — นโยบายการใช้งานจำกัด 1 ครั้ง/วินาที จึงค้นหาเมื่อกด Enter เท่านั้น
  */
 const NOMINATIM = 'https://nominatim.openstreetmap.org'

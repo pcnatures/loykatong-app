@@ -1,12 +1,11 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { MAP_PROVIDER } from '../../config/env'
 import { getScene } from '../../config/scenes'
 import { makeCustomLocation, nearestPopular, POPULAR_LOCATIONS } from '../../config/locations'
 import SceneBackdrop from '../river/SceneBackdrop'
 
-// โหลดเฉพาะผู้ให้บริการแผนที่ที่ใช้จริง (Google หรือ Leaflet)
-const MapKit = lazy(() => (MAP_PROVIDER === 'google' ? import('./GoogleMapKit') : import('./LeafletMapKit')))
+// แผนที่ OpenStreetMap (Leaflet) — โหลดแยกไฟล์เมื่อเปิดหน้าเลือกสถานที่
+const MapKit = lazy(() => import('./LeafletMapKit'))
 
 export default function LocationStep({ initial, onConfirm }) {
   return (
@@ -240,7 +239,7 @@ function SearchBox({ search, autocomplete, onPick }) {
     }
   }
 
-  // Google: ค้นหาอัตโนมัติขณะพิมพ์ (debounce) | OSM: ค้นหาเมื่อกด Enter
+  // autocomplete = ค้นหาขณะพิมพ์ (debounce) | OSM/Nominatim ปิดไว้ ค้นหาเมื่อกด Enter (จำกัด 1 ครั้ง/วินาที)
   useEffect(() => {
     if (!autocomplete) return
     const t = setTimeout(() => run(q), 320)

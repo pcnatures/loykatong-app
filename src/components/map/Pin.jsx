@@ -1,4 +1,4 @@
-/** หมุดรูปเปลวเทียนบนกระทง ใช้ร่วมกันทั้ง Google Maps (JSX) และ Leaflet (HTML string) */
+/** หมุดรูปเปลวเทียนบนกระทง สำหรับ Leaflet (HTML string) */
 const fillOf = (variant) => (variant === 'custom' ? '#ff7aa8' : variant === 'active' ? '#f6d985' : '#e0ac3c')
 
 export const pinHtml = (variant = 'default') => `
@@ -10,7 +10,3 @@ export const pinHtml = (variant = 'default') => `
     <path d="M11.5 19.5c3.4 3.4 11.6 3.4 15 0l-2.2 3.4h-10.6z" fill="#6fb04f"/>
   </svg>
 </div>`
-
-export function PinMarker({ variant = 'default' }) {
-  return <div dangerouslySetInnerHTML={{ __html: pinHtml(variant) }} />
-}

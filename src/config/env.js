@@ -6,12 +6,6 @@ const env = import.meta.env ?? {}
 
 const clean = (v) => (typeof v === 'string' ? v.trim() : '')
 
-export const GOOGLE_MAPS_API_KEY = clean(env.VITE_GOOGLE_MAPS_API_KEY)
-export const GOOGLE_MAPS_MAP_ID = clean(env.VITE_GOOGLE_MAPS_MAP_ID) || 'DEMO_MAP_ID'
-
-/** 'google' เมื่อมี API key, ไม่งั้นใช้ Leaflet + OpenStreetMap (ไม่ต้องใช้คีย์) */
-export const MAP_PROVIDER = GOOGLE_MAPS_API_KEY ? 'google' : 'leaflet'
-
 export const FIREBASE_CONFIG = {
   apiKey: clean(env.VITE_FIREBASE_API_KEY),
   authDomain: clean(env.VITE_FIREBASE_AUTH_DOMAIN),
