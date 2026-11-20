@@ -45,11 +45,13 @@ export default function LeafletMapKit({ children }) {
 function LeafletMapView({ places, selectedId, customPin, focus, onSelectPlace, onMapClick }) {
   return (
     <MapContainer center={[THAILAND_CENTER.lat, THAILAND_CENTER.lng]} zoom={6} zoomControl={false} className="h-full w-full" attributionControl>
+      {/* ภาพแผนที่จากเซิร์ฟเวอร์ OpenStreetMap (ไม่ต้องใช้คีย์) แล้วปรับเป็นโทนกลางคืนด้วย CSS (.lk-tiles-night)
+          เดิมใช้ CARTO dark_all แต่ CARTO เริ่มบังคับใช้ API key (พบเมื่อ 20 พ.ย. 2026) — ไม่มีคีย์จะได้ภาพ "API KEY REQUIRED" */}
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         maxZoom={19}
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        className="lk-tiles-night"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <ZoomControl position="bottomright" />
       {places.map((p) => (

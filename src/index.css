@@ -155,6 +155,10 @@
     background: #081230;
     font-family: var(--font-sans);
   }
+  /* ภาพแผนที่ OSM (สีสว่าง) → โทนกลางคืน: กลับสี แล้วหมุนเฉดกลับ ให้น้ำยังเป็นสีฟ้า สวนยังเป็นสีเขียว */
+  .lk-tiles-night {
+    filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88) saturate(0.6);
+  }
   .leaflet-control-attribution {
     background: rgb(4 9 24 / 0.7) !important;
     color: #c9b98d !important;

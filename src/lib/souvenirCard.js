@@ -1,4 +1,5 @@
 import { createElement } from 'react'
+import logo9ExpertUrl from '../assets/logo-9expert.webp'
 import Avatar from '../components/avatar/Avatar'
 import Krathong from '../components/krathong/Krathong'
 import SceneBackdrop from '../components/river/SceneBackdrop'
@@ -22,6 +23,12 @@ const WATER_END = 965
 const GOLD = '#efc55a'
 const FONT_DISPLAY = '"Charm", "Mitr", serif'
 const FONT_BODY = '"Mitr", "Noto Sans Thai", sans-serif'
+
+// โลโก้ 9Expert เหนือหัวเรื่อง — ครอปเฉพาะเนื้อโลโก้ (ไฟล์ต้นฉบับ 2000×656 มีขอบว่างรอบ ๆ)
+const LOGO_CROP = { x: 108, y: 113, w: 1785, h: 471 }
+const LOGO_H = 64
+const LOGO_TOP = 54 // ใต้กรอบทองชั้นใน (y = 36)
+const TITLE_GAP = 18 // ระยะห่างโลโก้ → หัวเรื่อง
 
 async function loadFonts() {
   if (!document.fonts?.load) return
@@ -49,6 +56,22 @@ async function svgToImage(element, width, height) {
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`
   })
   return img
+}
+
+/** โหลดรูปจาก URL — ถ้าโหลดไม่ได้คืน null (การ์ดยังสร้างได้ แค่ไม่มีโลโก้) */
+async function loadImage(src) {
+  const img = new Image()
+  img.decoding = 'async'
+  try {
+    await new Promise((resolve, reject) => {
+      img.onload = resolve
+      img.onerror = reject
+      img.src = src
+    })
+    return img
+  } catch {
+    return null
+  }
 }
 
 function roundRect(ctx, x, y, w, h, r) {
@@ -240,10 +263,11 @@ export async function renderSouvenirCard({ avatar, krathong, name, wish, locatio
   canvas.height = CARD_H
   const ctx = canvas.getContext('2d')
 
-  const [backdropImg, avatarImg, krathongImg] = await Promise.all([
+  const [backdropImg, avatarImg, krathongImg, logoImg] = await Promise.all([
     svgToImage(createElement(SceneBackdrop, { scene: location.scene, sceneConfig: scene }), CARD_W, CARD_W * 0.3),
     svgToImage(createElement(Avatar, { avatar, pose: 'wai' }), 300, 450),
     svgToImage(createElement(Krathong, { krathong }), 400, 350),
+    loadImage(logo9ExpertUrl),
   ])
 
   drawSky(ctx, scene, rnd)
@@ -277,24 +301,36 @@ export async function renderSouvenirCard({ avatar, krathong, name, wish, locatio
   ctx.fillStyle = top
   ctx.fillRect(0, 0, CARD_W, 300)
 
-  // หัวเรื่อง
+  // โลโก้ 9Expert (กึ่งกลางด้านบน)
+  let titleTop = 0
+  if (logoImg) {
+    const logoW = (LOGO_H * LOGO_CROP.w) / LOGO_CROP.h
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
+    ctx.drawImage(logoImg, LOGO_CROP.x, LOGO_CROP.y, LOGO_CROP.w, LOGO_CROP.h, (CARD_W - logoW) / 2, LOGO_TOP, logoW, LOGO_H)
+    titleTop = LOGO_TOP + LOGO_H + TITLE_GAP
+  }
+
+  // หัวเรื่อง — ถ้ามีโลโก้ ดันลงให้ยอดตัวอักษรอยู่ใต้โลโก้ (วัดความสูงตัวอักษรจริงของฟอนต์)
   ctx.textAlign = 'center'
   ctx.textBaseline = 'alphabetic'
-  const title = ctx.createLinearGradient(0, 70, 0, 190)
+  ctx.font = `700 132px ${FONT_DISPLAY}`
+  const ascent = Math.ceil(ctx.measureText('ลอยกระทง').actualBoundingBoxAscent || 95)
+  const titleY = Math.max(190, titleTop + ascent)
+  const title = ctx.createLinearGradient(0, titleY - 120, 0, titleY)
   title.addColorStop(0, '#fff6dc')
   title.addColorStop(0.5, '#f6d985')
   title.addColorStop(1, '#c48d27')
   ctx.fillStyle = title
   ctx.shadowColor = 'rgba(255,190,90,0.6)'
   ctx.shadowBlur = 24
-  ctx.font = `700 132px ${FONT_DISPLAY}`
-  ctx.fillText('ลอยกระทง', CARD_W / 2, 190)
+  ctx.fillText('ลอยกระทง', CARD_W / 2, titleY)
   ctx.shadowBlur = 0
   ctx.fillStyle = '#f6d985'
   ctx.font = `400 34px ${FONT_BODY}`
-  ctx.fillText(`พ.ศ. ${toThaiDigits(buddhistYear(date))}`, CARD_W / 2, 248)
-  diamond(ctx, CARD_W / 2 - 150, 236, 6)
-  diamond(ctx, CARD_W / 2 + 150, 236, 6)
+  ctx.fillText(`พ.ศ. ${toThaiDigits(buddhistYear(date))}`, CARD_W / 2, titleY + 58)
+  diamond(ctx, CARD_W / 2 - 150, titleY + 46, 6)
+  diamond(ctx, CARD_W / 2 + 150, titleY + 46, 6)
 
   // แผงคำอธิษฐาน
   const panel = ctx.createLinearGradient(0, WATER_END, 0, CARD_H)
